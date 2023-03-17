@@ -1,0 +1,278 @@
+CREATE TABLE `food_customer` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `phone` varchar(50) NOT NULL,
+  `address` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `food_customer`
+  ADD PRIMARY KEY (`id`);
+  
+ALTER TABLE `food_customer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+/*sample data for food customer table*/
+
+INSERT INTO `food_customer` (`id`, `name`, `email`, `password`, `phone`, `address`) VALUES
+(1, 'Chris Morris', 'chris@phpzag.com', '202cb962ac59075b964b07152d234b70', '1234567890', 'A - 1111 Street road, Newyork USA.');
+
+/*To store food item details*/
+
+CREATE TABLE `food_items` (
+  `id` int(30) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `price` int(30) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `images` varchar(200) NOT NULL,
+  `status` varchar(10) NOT NULL DEFAULT 'ENABLE'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `food_items`
+  ADD PRIMARY KEY (`id`);
+  
+ALTER TABLE `food_items`
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+
+/*Sample food item details*/
+
+INSERT INTO `food_items` (`id`, `name`, `price`, `description`, `images`, `status`) VALUES
+(58, 'Masala Paneer Kathi Roll', 100, 'Yammi Masala Paneer Kathi Roll loaded with Masala Paneer chunks, onion & Mayo.', 'Masala_Paneer_Kathi_Roll.jpg', 'ENABLE'),
+(59, 'Grilled Fish', 90, 'A whole Pomfret fish grilled with tangy marination & served with grilled onions and tomatoes.', 'Meurig.jpg', 'ENABLE'),
+(60, 'Chocolate Hazelnut Truffle', 199, 'This very delicious chocolate hazelnut truffle.', 'Chocolate_Hazelnut_Truffle.jpg', 'ENABLE'),
+(61, 'Choco Chip Shake', 97, 'Choco Chip Shake - a perfect party sweet treat.', 'Happy_Happy_Choco_Chip_Shake.jpg', 'ENABLE'),
+(62, 'Spring Rolls', 55, 'Delicious Spring Rolls', 'Spring_Rolls.jpg', 'ENABLE'),
+(63, 'Deluxe Thali', 77, 'Deluxe Thali is accompanied by Kattapa Biriyani, Devasena Paratha, Bhalladeva Patiala Lassi', 'Baahubali_Thali.jpg', 'ENABLE'),
+(65, 'Coffee', 35, 'concentrated coffee made by forcing pressurized water through finely ground coffee beans.', 'coffee.jpg', 'DISABLE'),
+(66, 'Tea', 66, 'The simple elixir of tea is of our natural world.', 'tea.jpg', 'DISABLE'),
+(68, 'Paneer', 33, 'it\'s masal paneer for you.', 'paneer pakora.jpg', 'DISABLE'),
+(69, 'Coffee', 88, 'concentrated coffee made by forcing pressurized water through finely ground coffee beans.', 'coffee.jpg', 'ENABLE'),
+(70, 'Tea', 33, 'The simple elixir of tea is of our natural world.', 'tea.jpg', 'ENABLE'),
+(71, 'Samosa', 55, 'Masala Samosa..', 'samosa.jpg', 'ENABLE'),
+(72, 'Paneer Pakora', 44, 'Tasty paneer pakora', 'paneer pakora.jpg', 'ENABLE'),
+(73, 'Puff', 33, 'Vegetable Puff, a snack with crisp-n-flaky outer layer and mixed vegetables stuffing', 'puff.jpg', 'ENABLE'),
+(74, 'Pizza', 123, 'Good and Tasty Pizza', 'Pizza.jpg', 'DISABLE'),
+(75, 'French Fries', 220, 'Pure Veg and Tasty.', 'frenchfries.jpg', 'DISABLE'),
+(76, 'Pakora', 213, 'Pure Vegetable and Tasty.', 'Pakora.jpg', 'DISABLE'),
+(77, 'Pizza', 450, 'Pure Vegetable and Tasty.', 'Pizza.jpg', 'ENABLE'),
+(78, 'French Fries', 150, 'Pure Veg and Tasty.', 'frenchfries.jpg', 'ENABLE'),
+(79, 'Pakora', 350, 'TASTY', 'Pakora.jpg', 'ENABLE');
+
+/*To store food order details with food item*/
+
+CREATE TABLE `food_orders` (
+  `id` int(30) NOT NULL,
+  `item_id` int(30) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `price` int(30) NOT NULL,
+  `quantity` int(30) NOT NULL,
+  `order_date` date NOT NULL,
+  `order_id` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `food_orders`
+  ADD PRIMARY KEY (`id`);
+  
+ALTER TABLE `food_orders`
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+/*Food order table*/
+
+INSERT INTO `food_orders` (`id`, `item_id`, `name`, `price`, `quantity`, `order_date`, `order_id`) VALUES
+(5, 60, 'Chocolate Hazelnut Truffle', 99, 1, '2021-03-19', '605008512657435925'),
+(6, 61, 'Choco Chip Shake', 80, 1, '2021-03-19', '605008512657435925'),
+(7, 63, 'Deluxe Thali', 75, 1, '2021-03-19', '605008512657435925'),
+(8, 59, 'Grilled Fish', 90, 1, '2021-03-19', '102263523585917743');
+
+/*List food items*/
+
+<div class='row'>
+<?php 
+$result = $food->itemsList();
+$count=0;
+while ($item = $result->fetch_assoc()) { 
+	if ($count == 0) {
+		echo "<div class='row'>";
+	}
+	?>	
+	<div class="col-md-3">
+		<form method="post" action="cart.php?action=add&id=<?php echo $item["id"]; ?>">
+			<div class="mypanel" align="center";>
+				<img src="images/<?php echo $item["images"]; ?>" 
+class="img-responsive">
+				<h4 
+class="text-dark"><?php echo $item["name"]; ?></h4>
+				<h5 
+class="text-info"><?php echo $item["description"]; ?></h5>
+				<h5 
+class="text-danger">$<?php echo $item["price"]; ?>/-</h5>
+				<h5 
+class="text-info">Quantity: <input type="number" min="1" 
+				max="25" 
+name="quantity" class="form-control" value="1" style="width: 60px;"> </h5>
+				<input 
+type="hidden" name="item_name" value="<?php echo $item["name"]; ?>">
+				<input 
+type="hidden" name="item_price" value="<?php echo $item["price"]; ?>">
+				<input 
+type="hidden" name="item_id" value="<?php echo $item["id"]; ?>">
+				<input 
+type="submit" name="add" style="margin-top:5px;" class="btn btn-success" value="Add to Cart">
+			</div>
+		</form>    
+	</div>
+
+	<?php 
+	$count++;
+	if($count==4) {
+	  echo "</div>";
+	  $count=0;
+	}
+} 
+?>
+</div>
+
+public function itemsList(){		
+	$stmt = $this->conn->prepare("SELECT id, name, price, description, images, status 
+	FROM ".$this->foodItemsTable);				
+	$stmt->execute();			
+	$result = $stmt->get_result();		
+	return $result;	
+}
+
+/*Manage Food Items Cart*/
+
+if(isset($_POST["add"])){
+	if(isset($_SESSION["cart"])){
+		$item_array_id = array_column($_SESSION["cart"], "food_id");
+		if(!in_array($_GET["id"], $item_array_id)){
+			$count = count($_SESSION["cart"]);
+			$item_array = array(
+				'food_id' => $_GET["id"],
+				'item_name' => $_POST["item_name"],
+				'item_price' => $_POST["item_price"],
+				'item_id' => $_POST["item_id"],
+				'item_quantity' => $_POST["quantity"]
+			);
+			$_SESSION["cart"][$count] = $item_array;
+			echo '<script>window.location="cart.php"</script>';
+		} else {					
+			echo '<script>window.location="cart.php"</script>';
+		}
+	} else {
+		$item_array = array(
+			'food_id' => $_GET["id"],
+			'item_name' => $_POST["item_name"],
+			'item_price' => $_POST["item_price"],
+			'item_id' => $_POST["item_id"],
+			'item_quantity' => $_POST["quantity"]
+		);
+		$_SESSION["cart"][0] = $item_array;
+	}
+}
+We will display food items in cart from $_SESSION[“cart”] to manage items in cart.
+
+<?php
+if(!empty($_SESSION["cart"])){
+?>      
+	<h3>Your Cart</h3>    
+	<table class="table table-striped">
+	 <thead class="thead-dark">
+	<tr>
+	<th width="40%">Food Name</th>
+	<th width="10%">Quantity</th>
+	<th width="20%">Price Details</th>
+	<th width="15%">Order Total</th>
+	<th width="5%">Action</th>
+	</tr>
+	</thead>
+	<?php
+	$total = 0;
+	foreach($_SESSION["cart"] as $keys => $values){
+	?>
+		<tr>
+		<td><?php echo $values["item_name"]; ?></td>
+		<td><?php echo $values["item_quantity"] ?></td>
+		<td>$<?php echo $values["item_price"]; ?></td>
+		<td>$<?php echo number_format($values["item_quantity"] * 
+$values["item_price"], 2); ?></td>
+		<td><a href="cart.php?action=delete&id=<?php 
+echo $values["food_id"]; ?>"><span 
+class="text-danger">Remove</span></a></td>
+		</tr>
+		<?php 
+		$total = $total + ($values["item_quantity"] * $values["item_price"]);
+	}
+	?>
+	<tr>
+	<td colspan="3" align="right">Total</td>
+	<td align="right">$<?php echo number_format($total, 2); ?></td>
+	<td></td>
+	</tr>
+	</table>
+	<?php
+	echo '<a href="cart.php?action=empty"><button class="btn btn-danger"><span 
+class="glyphicon glyphicon-trash"></span> 
+Empty Cart</button></a> <a 
+href="index.php"><button 
+class="btn btn-warning">Add more items</button></a> <a 
+href="checkout.php"><button 
+class="btn btn-success pull-right"><span 
+class="glyphicon glyphicon-share-alt"></span> Check Out</button></a>';
+	?>
+<?php
+} elseif(empty($_SESSION["cart"])){
+?>
+	<div class="container">
+	<div class="jumbotron">
+	<h3>Your cart is empty. Enjoy <a href="index.php">food list</a> here.</h3>        
+	</div>      
+	</div>    
+<?php
+}
+?>		
+</div>
+Step4: Process Order
+
+
+<?php if(!empty($_GET['order'])) {			
+	$total = 0;
+	$orderDate = date('Y-m-d');
+	if(isset($_SESSION["cart"])) {
+		foreach($_SESSION["cart"] as $keys => $values){					
+			$order->item_id = $values["item_id"];
+			$order->item_name = $values["item_name"];
+			$order->item_price = $values["item_price"];
+			$order->quantity = $values["item_quantity"];
+			$order->order_date = $orderDate;
+			$order->order_id = $_GET['order'];
+			$order->insert();
+		}
+		unset($_SESSION["cart"]);	
+	}				
+?>
+
+
+public function insert(){		
+	if($this->item_name) {
+		$stmt = $this->conn->prepare("
+		INSERT INTO ".$this->ordersTable."(`item_id`, `name`, `price`,
+ `quantity`, `order_date`, `order_id`)
+		VALUES(?,?,?,?,?,?)");		
+		$this->item_id = htmlspecialchars(strip_tags($this->item_id));
+		$this->item_name = htmlspecialchars(strip_tags($this->item_name));
+		$this->item_price = htmlspecialchars(strip_tags($this->item_price));
+		$this->quantity = htmlspecialchars(strip_tags($this->quantity));
+		$this->order_date = htmlspecialchars(strip_tags($this->order_date));
+		$this->order_id = htmlspecialchars(strip_tags($this->order_id));			
+		$stmt->bind_param("isiiss", 
+$this->item_id, $this->item_name, $this->item_price, 
+$this->quantity, $this->order_date, $this->order_id);			
+		if($stmt->execute()){
+			return true;
+		}		
+	}
+}
+
+
